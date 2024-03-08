@@ -8,7 +8,7 @@ const addAppinfo = asyncHandler(async (req, res) => {
       appUpdateVersion: req.body.appUpdateVersion,
       appforceUpdateVersion: req.body.appforceUpdateVersion,
       appname: req.body.appname,
-      message: req.body.message
+      message: req.body.message,
     };
     var appinfo = await appInfo.create(newAppinfo);
     res.json(appinfo);
@@ -19,8 +19,6 @@ const addAppinfo = asyncHandler(async (req, res) => {
 });
 
 const getappinfo = asyncHandler(async (req, res) => {
-  const { appname } = req.query;
-
   try {
     let appinfo = await appInfo.findOne({
       appname: req.query.appname,
@@ -42,7 +40,7 @@ const updateAppinfo = asyncHandler(async (req, res) => {
     appUpdateVersion,
     appforceUpdateVersion,
     appname,
-    message
+    message,
   } = req.body;
   try {
     const updatedAppinfo = await appInfo.findByIdAndUpdate(
@@ -52,7 +50,7 @@ const updateAppinfo = asyncHandler(async (req, res) => {
         appUpdateVersion: appUpdateVersion,
         appforceUpdateVersion: appforceUpdateVersion,
         appname: appname,
-        message:message
+        message: message,
       },
       { new: true } // This option returns the modified document rather than the original one
     );

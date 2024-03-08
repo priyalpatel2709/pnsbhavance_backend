@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const userModel = mongoose.Schema(
   {
     phone: { type: "String", default: "" },
-    password: { type: "String",},
+    password: { type: "String" },
     name: { type: "String", required: true },
     email: { type: "String", unique: true, required: true },
     isAdmin: {
@@ -15,6 +15,17 @@ const userModel = mongoose.Schema(
     subscription: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Subscription" },
     ],
+    pic: {
+      type: "String",
+      required: true,
+      default:
+        "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+    },
+    isActive: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
   },
   { timestaps: true }
 );

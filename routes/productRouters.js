@@ -5,6 +5,8 @@ const {
   updateprojectdata,
   deleteProject,
   deleteItemFromProject,
+  getoneProject,
+  addMultipleImages
 } = require("../controllers/projectControllers");
 const { protect } = require("../middleware/authMiddleware");
 const router = express.Router();
@@ -16,5 +18,8 @@ router.route("/deleteproject/:projectId").delete(protect, deleteProject);
 router
   .route("/deleteprojectimage/:projectId")
   .put(protect, deleteItemFromProject);
+
+router.route("/getoneproject/:projectId").get(getoneProject);
+router.route("/addMultipleImages/:projectId").put(protect,addMultipleImages)
 
 module.exports = router;

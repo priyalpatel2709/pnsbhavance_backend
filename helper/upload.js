@@ -3,6 +3,7 @@ const {
   PutObjectCommand,
   GetObjectCommand,
   ListObjectsV2Command,
+  DeleteObjectCommand,
 } = require("@aws-sdk/client-s3");
 
 const s3Client = new S3Client({
@@ -38,4 +39,22 @@ async function uploadFileToS3(file) {
   }
 }
 
-module.exports = { uploadFileToS3 };
+async function deleteFileFromS3(fileName) {
+  const deleteParams = {
+    Bucket: "pnsweb-bhavans", // Specify your S3 bucket name
+    Key: fileName, // Specify the key (file name) of the file to delete
+  };
+
+  const command = new DeleteObjectCommand(deleteParams);
+
+  try {
+    const response = await s3Client.send(command);
+    console.log("File deleted successfully:", fileName);
+    return response;
+  } catch (err) {
+    console.error("Error deleting file:", err);
+    throw err;
+  }
+}
+
+module.exports = { uploadFileToS3, deleteFileFromS3 };

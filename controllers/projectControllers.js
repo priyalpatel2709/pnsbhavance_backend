@@ -209,10 +209,56 @@ const deleteItemFromProject = asyncHandler(async (req, res) => {
   }
 });
 
+const getoneProject = asyncHandler(async (req, res) => {
+  try {
+    const projectId = req.params.projectId;
+    const project = await Project.findById(projectId);
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ error: `Internal server error ${error}` });
+  }
+});
+
+const addMultipleImages = asyncHandler(async (req, res) => {
+  try {
+    const projectId = req.params.projectId;
+    const { field, newData } = req.body;
+
+    // Find the project by ID
+    const project = await Project.findById(projectId);
+
+    // Check if the project exists
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+    // Update the specified field with the new image URLs
+    switch (field) {
+      case "projectImages":
+        project.projectImages.push(...newData);
+        break;
+      case "layouts":
+        project.layouts.push(...newData);
+        break;
+      case "dailyUpdates":
+        project.dailyUpdates.push(...newData);
+        break;
+      default:
+        return res.status(400).json({ message: "Invalid field name" });
+    }
+    await project.save();
+    res.status(200).json({ message: "Images added successfully" });
+  } catch (error) {
+    console.error("Error adding images:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 module.exports = {
   addprojectinfo,
   getallprogect,
   updateprojectdata,
   deleteProject,
   deleteItemFromProject,
+  getoneProject,
+  addMultipleImages,
 };

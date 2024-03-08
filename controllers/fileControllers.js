@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const { uploadFileToS3 } = require("../helper/upload");
+const { uploadFileToS3, deleteFileFromS3 } = require("../helper/upload");
 const uploadFileMiddleware = async (req, res, next) => {
   try {
     // Upload brochurepdf file to S3 if it exists
@@ -12,7 +12,7 @@ const uploadFileMiddleware = async (req, res, next) => {
         fileUrls.push(uploadResult.Location);
       }
     }
-    // console.log('File: fileControllers.js', 'Line 15:',fileUrls );
+    console.log('File: fileControllers.js', 'Line 15:',fileUrls );
     res.json({ fileUrls });
   } catch (error) {
     console.error("Error uploading file:", error);
@@ -20,4 +20,16 @@ const uploadFileMiddleware = async (req, res, next) => {
   }
 };
 
-module.exports = { uploadFileMiddleware };
+const deleteFilefromS3 = async (req, res) => {
+  const { fileName } = req.body;
+  try {
+    const deleteResult = await deleteFileFromS3(fileName);
+    console.log("File: fileControllers.js", "Line 27:", deleteResult);
+    res.json({ deleteResult });
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+module.exports = { uploadFileMiddleware, deleteFilefromS3 };
