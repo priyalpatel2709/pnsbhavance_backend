@@ -7,6 +7,7 @@ const {
   allUsersV2,
   updateUserinfo,
   deleteUser,
+  getOneuser
 } = require("../controllers/userControllers");
 const router = express.Router();
 const { protect } = require("../middleware/authMiddleware");
@@ -16,7 +17,8 @@ router.post("/login", authUser); // login user
 router.post("/updateuserAdmin/:userId", updateUserinfoAdmin);
 
 router.route("/getallusers").get(allUsersV2);
-router.route("/updateuser").put(updateUserinfo);
+router.route("/getoneusers/:userId").get(getOneuser);
+// router.route("/updateuser").put(updateUserinfo);
 router.route("/deleteuser/:userId").delete(protect, deleteUser);
 
 module.exports = router;

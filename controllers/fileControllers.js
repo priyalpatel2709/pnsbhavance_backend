@@ -12,7 +12,7 @@ const uploadFileMiddleware = async (req, res, next) => {
         fileUrls.push(uploadResult.Location);
       }
     }
-    console.log('File: fileControllers.js', 'Line 15:',fileUrls );
+
     res.json({ fileUrls });
   } catch (error) {
     console.error("Error uploading file:", error);
@@ -24,7 +24,7 @@ const deleteFilefromS3 = async (req, res) => {
   const { fileName } = req.body;
   try {
     const deleteResult = await deleteFileFromS3(fileName);
-    console.log("File: fileControllers.js", "Line 27:", deleteResult);
+
     res.json({ deleteResult });
   } catch (error) {
     console.error("Error uploading file:", error);

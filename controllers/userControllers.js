@@ -35,6 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
       phone: user.phone,
       token: generateToken(user._id),
       pic: user.pic,
+      isActive: user.isActive,
     });
   } else {
     res.status(400);
@@ -55,6 +56,7 @@ const authUser = asyncHandler(async (req, res) => {
       token: generateToken(user._id),
       pic: user.pic,
       isAdmin: user.isAdmin,
+      isActive: user.isActive,
       // deviceToken: user.deviceToken,
     });
   } else {
@@ -81,10 +83,10 @@ const allUsers = asyncHandler(async (req, res) => {
 const allUsersV2 = asyncHandler(async (req, res) => {
   try {
     // Fetch all projects
-    const allProjects = await User.find();
+    const allUsers = await User.find();
 
     // Send the projects as a JSON response
-    res.json(allProjects);
+    res.json(allUsers);
   } catch (error) {
     // If an error occurs, send an error response
     res.status(500).json({ error: "Internal server error" });
@@ -92,7 +94,7 @@ const allUsersV2 = asyncHandler(async (req, res) => {
 });
 
 const updateUserinfoAdmin = asyncHandler(async (req, res) => {
-  const { name, isAdmin, password, phone, isActive } = req.body;
+  const { name, isAdmin, password, phone, isActive, pic } = req.body;
   const userId = req.params.userId;
 
   const updatrdUser = await User.findByIdAndUpdate(
@@ -103,6 +105,7 @@ const updateUserinfoAdmin = asyncHandler(async (req, res) => {
       name: name,
       isAdmin: isAdmin,
       isActive: isActive,
+      pic: pic,
     },
     { new: true }
   );
@@ -173,6 +176,27 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
+const getOneuser = asyncHandler(async (req, res) => {
+  const userId = req.params.userId;
+
+  const user = await User.findById(userId);
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    res.json(user);
+  } catch (error) {
+    // Handle any errors that occur during the delete process
+    console.error("Error deleting project:", error);
+    res
+      .status(500)
+      .json({ message: `Error deleting project: ${error.message}` });
+  }
+});
+
 module.exports = {
   registerUser,
   authUser,
@@ -181,4 +205,5 @@ module.exports = {
   allUsersV2,
   updateUserinfo,
   deleteUser,
+  getOneuser
 };
