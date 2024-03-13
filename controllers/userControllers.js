@@ -83,7 +83,7 @@ const allUsers = asyncHandler(async (req, res) => {
 const allUsersV2 = asyncHandler(async (req, res) => {
   try {
     // Fetch all projects
-    const allUsers = await User.find();
+    const allUsers = await User.find().populate("favorites", "projectname");
 
     // Send the projects as a JSON response
     res.json(allUsers);
