@@ -70,7 +70,7 @@ const addprojectinfo = async (req, res) => {
     // Respond with the saved project data
     res.status(200).json(savedProject);
   } catch (error) {
-    console.error("Error adding project:", error);
+    // console.error("Error adding project:", error);
     res.status(500).json({ message: "Internal server error." });
   }
 };
@@ -168,7 +168,7 @@ const deleteProject = asyncHandler(async (req, res) => {
     res.json({ message: "Project deleted successfully" });
   } catch (error) {
     // Handle any errors that occur during the delete process
-    console.error("Error deleting project:", error);
+    // console.error("Error deleting project:", error);
     res
       .status(500)
       .json({ message: `Error deleting project: ${error.message}` });
@@ -216,7 +216,7 @@ const deleteItemFromProject = asyncHandler(async (req, res) => {
     res.json(updatedProject);
   } catch (error) {
     // Handle any errors that occur during the update process
-    console.error("Error deleting item from project:", error);
+    // console.error("Error deleting item from project:", error);
     res
       .status(500)
       .json({ message: `Error deleting item from project: ${error.message}` });

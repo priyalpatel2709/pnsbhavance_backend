@@ -34,7 +34,7 @@ async function uploadFileToS3(file) {
 
     return { Location: location }; // Constructing the location manually
   } catch (err) {
-    console.error("Error uploading file:", err);
+    // console.error("Error uploading file:", err);
     throw err;
   }
 }
@@ -49,10 +49,10 @@ async function deleteFileFromS3(fileName) {
 
   try {
     const response = await s3Client.send(command);
-    console.log("File deleted successfully:", fileName);
+    // console.log("File deleted successfully:", fileName);
     return response;
   } catch (err) {
-    console.error("Error deleting file:", err);
+    // console.error("Error deleting file:", err);
     throw err;
   }
 }

@@ -15,7 +15,7 @@ const uploadFileMiddleware = async (req, res, next) => {
 
     res.json({ fileUrls });
   } catch (error) {
-    console.error("Error uploading file:", error);
+    // console.error("Error uploading file:", error);
     res.status(500).json({ message: "Internal server error." });
   }
 };
@@ -27,7 +27,7 @@ const deleteFilefromS3 = async (req, res) => {
 
     res.json({ deleteResult });
   } catch (error) {
-    console.error("Error uploading file:", error);
+    // console.error("Error uploading file:", error);
     res.status(500).json({ message: "Internal server error." });
   }
 };

@@ -11,6 +11,8 @@ const {
   getFavorites,
   removeFavoriteProject,
   addFavoriteProject,
+  htmlPageForRestPassword,
+  updateUserPassword,
 } = require("../controllers/userControllers");
 const router = express.Router();
 const { protect } = require("../middleware/authMiddleware");
@@ -27,5 +29,7 @@ router
   .put(protect, removeFavoriteProject);
 router.route("/addFavoriteProject/:projectId").put(protect, addFavoriteProject);
 router.route("/deleteuser/:userId").delete(protect, deleteUser);
+router.route("/RestPassword").get(htmlPageForRestPassword);
+router.route("/update_password").post(updateUserPassword);
 
 module.exports = router;

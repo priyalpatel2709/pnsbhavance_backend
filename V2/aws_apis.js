@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 
 app.listen(3001, () => {
-  console.log("Server is running on port 3001");
+  // console.log("Server is running on port 3001");
 });
 
 const s3Client = new S3Client({
@@ -39,7 +39,7 @@ app.post("/upload", upload, async (req, res) => {
     const uploadResponse = await uploadFileToS3(file);
     res.send("Successfully uploaded " + uploadResponse.Location + " location!");
   } catch (error) {
-    console.error("Error uploading file:", error);
+    // console.error("Error uploading file:", error);
     res.status(500).send("Error uploading file" + error);
   }
 });
