@@ -253,6 +253,10 @@ const addMultipleImages = asyncHandler(async (req, res) => {
   }
 });
 
+const addtoFavorites = asyncHandler(async(req,res) =>{
+  
+}) 
+
 module.exports = {
   addprojectinfo,
   getallprogect,

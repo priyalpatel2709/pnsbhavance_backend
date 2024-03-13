@@ -197,6 +197,84 @@ const getOneuser = asyncHandler(async (req, res) => {
   }
 });
 
+const addFavoriteProject = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const projectId = req.params.projectId;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      // throw new Error("User not found");
+      return res.status(500).json({
+        message: `User not found}`,
+      });
+    }
+
+    const result = await user.addFavoriteProject(projectId);
+    if (!result.success) {
+      return res.status(500).json({
+        message: `Error adding project to favorites: ${result.message}`,
+      });
+    }
+
+    res.json({ message: "Project added to favorites" });
+  } catch (error) {
+    console.error("Error adding project to favorites:", error);
+    res
+      .status(500)
+      .json({ message: `Error adding project to favorites: ${error.message}` });
+  }
+});
+
+const removeFavoriteProject = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const projectId = req.params.projectId;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const result = await user.removeFavoriteProject(projectId);
+    if (!result.success) {
+      throw new Error(result.message);
+    }
+
+    res.json({ message: "Project removed from favorites" });
+  } catch (error) {
+    console.error("Error removing project from favorites:", error);
+    res.status(500).json({
+      message: `Error removing project from favorites: ${error.message}`,
+    });
+  }
+});
+
+const getFavorites = asyncHandler(async (req, res) => {
+  // const userId = req.params.userId;
+  const userId = req.user._id;
+
+  console.log("File: userControllers.js", "Line 252:", userId);
+
+  try {
+    const user = await User.findById(userId).populate("favorites");
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    if (user.favorites.length === 0) {
+      return res.json({ message: "User has no favorite projects" });
+    }
+
+    res.json(user.favorites);
+  } catch (error) {
+    console.error("Error getting favorite projects:", error);
+    res
+      .status(500)
+      .json({ message: `Error getting favorite projects: ${error.message}` });
+  }
+});
+
 module.exports = {
   registerUser,
   authUser,
@@ -205,5 +283,8 @@ module.exports = {
   allUsersV2,
   updateUserinfo,
   deleteUser,
-  getOneuser
+  getOneuser,
+  getFavorites,
+  removeFavoriteProject,
+  addFavoriteProject,
 };
