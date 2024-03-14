@@ -124,6 +124,8 @@ const updateUserinfoAdmin = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("User Info Not Found");
   } else {
+    await updatrdUser.populate("favorites", "projectname")
+
     res.json(updatrdUser);
   }
 });
