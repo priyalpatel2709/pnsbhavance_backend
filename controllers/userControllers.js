@@ -296,6 +296,12 @@ const htmlPageForRestPassword = asyncHandler(async (req, res) => {
   // Retrieve the email from query parameters
   const { email } = req.query;
 
+  const baseUrl = `${req.protocol}://${req.get("host")}${
+    req.path
+  }?email=${email}`;
+
+  // console.log("Base URL:", baseUrl);
+
   // Log the retrieved email for debugging
   // console.log("File: userControllers.js", "Line 298:", email);
 
