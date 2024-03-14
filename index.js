@@ -1,11 +1,13 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const admin = require("firebase-admin");
 
 const userRouters = require("./routes/userRouters");
 const projectRouters = require("./routes/productRouters");
 const appInfo = require("./routes/appInfoRoutes");
 const fileRouters = require("./routes/fileRoutes");
+const serviceAccount = require("./service_accountKey.json");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
 const connectDB = require("./config/db");
@@ -18,6 +20,10 @@ const app = express();
 app.use(express.json());
 
 app.use(cors());
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 app.get("/", (req, resp) => {
   const htmlContent = "<h1>Hello, Srever is Running 😁</h1>";

@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const generateToken = require("../config/generateToken");
 const User = require("../models/userModel");
+const admin = require("firebase-admin");
 // const bcrypt = require("bcryptjs");
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -41,6 +42,15 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Fail To Create User  :(");
   }
+});
+
+const varifyUser = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  await admin.auth().updateUser(email, {
+    emailVerified: true,
+  });
+  res.status(200).json({ message: "Done" });
 });
 
 const authUser = asyncHandler(async (req, res) => {
@@ -300,12 +310,6 @@ const htmlPageForRestPassword = asyncHandler(async (req, res) => {
     req.path
   }?email=${email}`;
 
-  // console.log("Base URL:", baseUrl);
-
-  // Log the retrieved email for debugging
-  // console.log("File: userControllers.js", "Line 298:", email);
-
-  // HTML content with a form to update the password
   const htmlContent = `
   <!DOCTYPE html>
   <html lang="en">
@@ -436,4 +440,5 @@ module.exports = {
   addFavoriteProject,
   htmlPageForRestPassword,
   updateUserPassword,
+  varifyUser,
 };

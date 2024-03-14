@@ -13,6 +13,7 @@ const {
   addFavoriteProject,
   htmlPageForRestPassword,
   updateUserPassword,
+  varifyUser
 } = require("../controllers/userControllers");
 const router = express.Router();
 const { protect } = require("../middleware/authMiddleware");
@@ -30,6 +31,7 @@ router
 router.route("/addFavoriteProject/:projectId").put(protect, addFavoriteProject);
 router.route("/deleteuser/:userId").delete(protect, deleteUser);
 router.route("/RestPassword").get(htmlPageForRestPassword);
+router.route("/varifyUser").get(varifyUser);
 router.route("/update_password").post(updateUserPassword);
 
 module.exports = router;
