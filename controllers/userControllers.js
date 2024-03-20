@@ -1,11 +1,13 @@
 const asyncHandler = require("express-async-handler");
 const generateToken = require("../config/generateToken");
+const ExcelJS = require("exceljs");
 const User = require("../models/userModel");
 const admin = require("firebase-admin");
 // const bcrypt = require("bcryptjs");
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, isAdmin, password, phone, pic } = req.body;
+  const { name, email, isAdmin, password, phone, pic, whatsappNumber } =
+    req.body;
   if (!name || !email) {
     res.status(400);
     throw new Error("Pless enter all the Feilds");
@@ -24,6 +26,7 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
     phone,
     pic,
+    whatsappNumber,
   });
 
   if (user) {
@@ -37,6 +40,7 @@ const registerUser = asyncHandler(async (req, res) => {
       token: generateToken(user._id),
       pic: user.pic,
       isActive: user.isActive,
+      whatsappNumber: user.whatsappNumber,
     });
   } else {
     res.status(400);
@@ -58,7 +62,7 @@ const authUser = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email });
 
-  if (user && ispasswordReq) {
+  if (user && !ispasswordReq) {
     console.log("File: userControllers.js", "Line 64:", "me 6u ??");
     // If user exists and password verification is not required
     res.status(200).json({
@@ -69,6 +73,7 @@ const authUser = asyncHandler(async (req, res) => {
       pic: user.pic,
       isAdmin: user.isAdmin,
       isActive: user.isActive,
+      whatsappNumber: user.whatsappNumber,
       // deviceToken: user.deviceToken,
     });
   } else if (user && (await user.matchPassword(password))) {
@@ -81,6 +86,7 @@ const authUser = asyncHandler(async (req, res) => {
       pic: user.pic,
       isAdmin: user.isAdmin,
       isActive: user.isActive,
+      whatsappNumber: user.whatsappNumber,
       // deviceToken: user.deviceToken,
     });
   } else {
@@ -88,6 +94,108 @@ const authUser = asyncHandler(async (req, res) => {
     res.status(400).json({ error: "Email or Password is incorrect" });
   }
 });
+
+const downloadUserData = async (req, res) => {
+  try {
+    const users = await User.find().lean(); // Assuming User is your Mongoose model
+
+    // Create a new workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Users");
+
+    // Define headers
+    const headers = [
+      "Name",
+      "Email",
+      "Phone",
+      "isAdmin",
+      "Pic",
+      "WhatsappNumber",
+      "isActive",
+    ];
+    worksheet.addRow(headers);
+
+    // Add user data to the worksheet
+    users.forEach((user) => {
+      const row = [
+        user.name,
+        user.email,
+        user.phone || "", // Handle null or undefined values
+        user.isAdmin ? "Yes" : "No", // Convert boolean to string
+        user.pic,
+        user.whatsappNumber || "", // Handle null or undefined values
+        user.isActive ? "Active" : "Inactive", // Convert boolean to string
+      ];
+      worksheet.addRow(row);
+    });
+
+    // Save the workbook to a buffer
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    // Send the buffer as a downloadable file
+    res.set({
+      "Content-Type":
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "Content-Disposition": "attachment; filename=user_data.xlsx",
+      "Content-Length": buffer.length,
+    });
+    res.send(buffer);
+  } catch (error) {
+    console.error("Error downloading user data:", error);
+    res.status(500).json({
+      message: `Error downloading user data: ${error}`,
+    });
+  }
+};
+
+async function downloadUserDataV2() {
+  try {
+    // Fetch user data from the database
+    const users = await User.find().lean(); // Assuming User is your Mongoose model
+
+    // Create a new workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Users");
+
+    // Define headers
+    const headers = [
+      "Name",
+      "Email",
+      "Phone",
+      "isAdmin",
+      "Pic",
+      "WhatsappNumber",
+      "isActive",
+    ];
+    worksheet.addRow(headers);
+
+    // Add user data to the worksheet
+    users.forEach((user) => {
+      const row = [
+        user.name,
+        user.email,
+        user.phone || "", // Handle null or undefined values
+        user.isAdmin ? "Yes" : "No", // Convert boolean to string
+        user.pic,
+        user.whatsappNumber || "", // Handle null or undefined values
+        user.isActive ? "Active" : "Inactive", // Convert boolean to string
+      ];
+      worksheet.addRow(row);
+    });
+
+    // Save the workbook to a file
+    await workbook.xlsx.writeFile("user_data.xlsx");
+    res.status(200).json({
+      message: "User data downloaded successfully.",
+    });
+    console.log("User data downloaded successfully.");
+  } catch (error) {
+    res.status(500).json({
+      message: `Error downloading user data:", ${error}`,
+    });
+    console.error("Error downloading user data:", error);
+  }
+}
 
 const allUsers = asyncHandler(async (req, res) => {
   // console.log('File: userControllers.js', 'Line 61:', req.query.search);
@@ -118,7 +226,8 @@ const allUsersV2 = asyncHandler(async (req, res) => {
 });
 
 const updateUserinfoAdmin = asyncHandler(async (req, res) => {
-  const { name, isAdmin, password, phone, isActive, pic } = req.body;
+  const { name, isAdmin, password, phone, isActive, pic, whatsappNumber } =
+    req.body;
   const userId = req.params.userId;
 
   const updatrdUser = await User.findByIdAndUpdate(
@@ -130,6 +239,7 @@ const updateUserinfoAdmin = asyncHandler(async (req, res) => {
       isAdmin: isAdmin,
       isActive: isActive,
       pic: pic,
+      whatsappNumber: whatsappNumber,
     },
     { new: true }
   );
@@ -457,4 +567,5 @@ module.exports = {
   htmlPageForRestPassword,
   updateUserPassword,
   varifyUser,
+  downloadUserData,
 };
