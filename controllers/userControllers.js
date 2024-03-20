@@ -54,11 +54,25 @@ const varifyUser = asyncHandler(async (req, res) => {
 });
 
 const authUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, ispasswordReq } = req.body;
 
   const user = await User.findOne({ email });
 
-  if (user && (await user.matchPassword(password))) {
+  if (user && ispasswordReq) {
+    console.log("File: userControllers.js", "Line 64:", "me 6u ??");
+    // If user exists and password verification is not required
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      token: generateToken(user._id),
+      pic: user.pic,
+      isAdmin: user.isAdmin,
+      isActive: user.isActive,
+      // deviceToken: user.deviceToken,
+    });
+  } else if (user && (await user.matchPassword(password))) {
+    // If user exists and password matches
     res.status(200).json({
       _id: user._id,
       name: user.name,
@@ -70,8 +84,8 @@ const authUser = asyncHandler(async (req, res) => {
       // deviceToken: user.deviceToken,
     });
   } else {
-    res.status(400);
-    throw new Error("Email or Password is not match");
+    // If user doesn't exist or password doesn't match
+    res.status(400).json({ error: "Email or Password is incorrect" });
   }
 });
 
@@ -124,7 +138,7 @@ const updateUserinfoAdmin = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("User Info Not Found");
   } else {
-    await updatrdUser.populate("favorites", "projectname")
+    await updatrdUser.populate("favorites", "projectname");
 
     res.json(updatrdUser);
   }
