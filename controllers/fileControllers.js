@@ -11,6 +11,8 @@ const uploadFileMiddleware = async (req, res, next) => {
         const uploadResult = await uploadFileToS3(file);
         fileUrls.push(uploadResult.Location);
       }
+    } else {
+      return res.status(500).json({ message: "File Not Found" });
     }
 
     res.json({ fileUrls });
