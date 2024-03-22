@@ -309,10 +309,11 @@ const deleteUser = asyncHandler(async (req, res) => {
 const getOneuser = asyncHandler(async (req, res) => {
   const userId = req.params.userId;
 
-  const user = await User.findById(userId);
-
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate(
+      "favorites",
+      "projectname"
+    );
     if (!user) {
       throw new Error("User not found");
     }
@@ -444,49 +445,49 @@ const htmlPageForRestPassword = asyncHandler(async (req, res) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Update Password</title>
   <style>
-    body {
-      background-color: #D7E5FF; /* Light blue background color for the body */
-      font-family: Arial, sans-serif; /* Font family for better readability */
-    }
+      body {
+          background-color: #D7E5FF;
+          font-family: Arial, sans-serif;
+      }
   
-    h1 {
-      color: darkblue; /* Dark blue color for the heading */
-    }
+      h1 {
+          color: darkblue;
+      }
   
-    form {
-      background-color: white; /* White background for the form */
-      padding: 20px; /* Add some padding to the form */
-      border-radius: 10px; /* Rounded corners for the form */
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow for a slight elevation effect */
-    }
+      form {
+          background-color: white;
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
   
-    label {
-      display: block; /* Make labels block elements for better alignment */
-      margin-bottom: 5px; /* Add some space below each label */
-    }
+      label {
+          display: block;
+          margin-bottom: 5px;
+      }
   
-    input[type="password"] {
-      width: 100%; /* Make the input fields take up the full width */
-      padding: 8px; /* Add some padding to the input fields */
-      margin-bottom: 15px; /* Add some space below each input field */
-      border-radius: 5px; /* Rounded corners for the input fields */
-      border: 1px solid #ccc; /* Add a border to the input fields */
-      box-sizing: border-box; /* Include padding and border in the element's total width and height */
-    }
+      input[type="password"] {
+          width: 100%;
+          padding: 8px;
+          margin-bottom: 15px;
+          border-radius: 5px;
+          border: 1px solid #ccc;
+          box-sizing: border-box;
+      }
   
-    button[type="submit"] {
-      background-color: darkblue; /* Dark blue background color for the submit button */
-      color: white; /* White text color for the submit button */
-      padding: 10px 20px; /* Add some padding to the button */
-      border: none; /* Remove the border */
-      border-radius: 5px; /* Rounded corners for the button */
-      cursor: pointer; /* Change cursor to pointer on hover */
-      transition: background-color 0.3s; /* Add a smooth transition for the background color */
-    }
+      button[type="submit"] {
+          background-color: darkblue;
+          color: white;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+      }
   
-    button[type="submit"]:hover {
-      background-color: #003366; /* Darker blue background color on hover */
-    }
+      button[type="submit"]:hover {
+          background-color: #003366;
+      }
   </style>
   </head>
   <body>
@@ -494,57 +495,69 @@ const htmlPageForRestPassword = asyncHandler(async (req, res) => {
   <h1>Update Password</h1>
   
   <form id="updatePasswordForm">
-    <label for="newPassword">New Password:</label>
-    <input type="password" id="newPassword" name="newPassword" required>
-    
-    <label for="confirmNewPassword">Confirm New Password:</label>
-    <input type="password" id="confirmNewPassword" name="confirmNewPassword" required>
-    
-    <!-- Hidden input field to store the email -->
-    <input type="hidden" id="email" name="email" value="${email}">
-    
-    <button type="submit">Update Password</button>
+      <label for="newPassword">New Password:</label>
+      <input type="password" id="newPassword" name="newPassword" required>
+  
+      <label for="confirmNewPassword">Confirm New Password:</label>
+      <input type="password" id="confirmNewPassword" name="confirmNewPassword" required>
+  
+      <!-- Hidden input field to store the email -->
+      <input type="hidden" id="email" name="email" value="${email}">
+  
+      <button type="submit">Update Password</button>
   </form>
   
   <script>
-    const form = document.getElementById('updatePasswordForm');
-    form.addEventListener('submit', async function(event) {
-      event.preventDefault(); // Prevent the default form submission
-      
-      const newPassword = document.getElementById('newPassword').value;
-      const confirmNewPassword = document.getElementById('confirmNewPassword').value;
-      const email = document.getElementById('email').value;
-      
-      // Perform client-side validation
-      if (newPassword !== confirmNewPassword) {
-        alert('New password and confirm new password do not match.');
-        return;
+      function validatePassword(inputString) {
+          const pattern = /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/;
+          return pattern.test(inputString);
       }
-      
-      // Make AJAX request to update password
-      try {
-        const response = await fetch('/api/user/update_password', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, newPassword })
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to update password');
-        }
-        
-        alert('Password updated successfully!');
-        // Redirect to another page if needed
-      } catch (error) {
-        alert('Failed to update password: ' + error.message);
-      }
-    });
+  
+      const form = document.getElementById('updatePasswordForm');
+      form.addEventListener('submit', async function(event) {
+          event.preventDefault(); // Prevent the default form submission
+          
+          const newPassword = document.getElementById('newPassword').value;
+          const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+          const email = document.getElementById('email').value;
+          
+          // Perform client-side validation
+          if (newPassword !== confirmNewPassword) {
+              alert('New password and confirm new password do not match.');
+              return;
+          }
+  
+          // Validate the new password
+          if (!validatePassword(newPassword)) {
+              alert('Password must contain at least one uppercase letter, one lowercase letter, one digit, one special character, and be at least 8 characters long.');
+              return;
+          }
+          
+          // Make AJAX request to update password
+          try {
+              const response = await fetch('/api/user/update_password', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ email, newPassword })
+              });
+              
+              if (!response.ok) {
+                  throw new Error('Failed to update password');
+              }
+              
+              alert('Password updated successfully!');
+              // Redirect to another page if needed
+          } catch (error) {
+              alert('Failed to update password: ' + error.message);
+          }
+      });
   </script>
   
   </body>
   </html>
+  
   
   `;
 
