@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const admin = require("firebase-admin");
+const path = require("path");
 
 const userRouters = require("./routes/userRouters");
 const projectRouters = require("./routes/productRouters");
@@ -23,6 +24,12 @@ app.use(cors());
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
+});
+
+app.use(express.static(path.join(__dirname, "public-flutter")));
+
+app.get("/web", (req, res) => {
+    res.sendFile(path.join(__dirname, "public-flutter/index.html"));
 });
 
 app.get("/", (req, resp) => {
