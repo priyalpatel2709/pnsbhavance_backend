@@ -10535,7 +10535,7 @@ QC(a,b,c){return A.b8w(a,b,c)},
 b8w(a,b,a0){var s=0,r=A.x(t.z),q,p=2,o,n,m,l,k,j,i,h,g,f,e,d,c
 var $async$QC=A.r(function(a1,a2){if(a1===1){o=a2
 s=p}while(true)switch(s){case 0:p=4
-n=A.d4("http://localhost:9800/api/user/login",0,null)
+n=A.d4("https://pnsbhavance-backend.onrender.com/api/user/login",0,null)
 h=t.N
 m=B.J.oq(A.ai(["email",a,"password",a0,"ispasswordReq",b],h,t.K),null)
 s=7
@@ -10584,7 +10584,7 @@ D9(){var s=0,r=A.x(t.Z7),q,p=2,o,n,m,l,k,j,i,h
 var $async$D9=A.r(function(a,b){if(a===1){o=b
 s=p}while(true)switch(s){case 0:p=4
 s=7
-return A.p(A.P8(A.d4("http://localhost:9800/api/project/getallproject",0,null),null),$async$D9)
+return A.p(A.P8(A.d4("https://pnsbhavance-backend.onrender.com/api/project/getallproject",0,null),null),$async$D9)
 case 7:n=b
 if(n.b===200){j=n
 m=B.J.cZ(0,A.d9(A.d8(j.e).c.a.i(0,"charset")).br(0,j.w),null)
@@ -10612,7 +10612,7 @@ QA(a,b,c,d,e,f){return A.b8r(a,b,c,d,e,f)},
 b8r(a,b,c,a0,a1,a2){var s=0,r=A.x(t.z),q,p=2,o,n,m,l,k,j,i,h,g,f,e,d
 var $async$QA=A.r(function(a3,a4){if(a3===1){o=a4
 s=p}while(true)switch(s){case 0:p=4
-n=A.d4("http://localhost:9800/api/user",0,null)
+n=A.d4("https://pnsbhavance-backend.onrender.com/api/user",0,null)
 g=t.N
 m=B.J.oq(A.ai(["email",a,"name",b,"password",c,"phone",a0,"whatsappNumber",a2],g,g),null)
 s=7
@@ -10652,7 +10652,7 @@ b8u(a,b){var s=0,r=A.x(t.rM),q,p=2,o,n,m,l,k,j,i,h
 var $async$Db=A.r(function(c,d){if(c===1){o=d
 s=p}while(true)switch(s){case 0:A.dT("bodt---->"+a.k(0))
 p=4
-n=A.d4("http://localhost:9800/api/user/updateuserAdmin/"+b,0,null)
+n=A.d4("https://pnsbhavance-backend.onrender.com/api/user/updateuserAdmin/"+b,0,null)
 j=t.N
 j=A.ai(["Content-Type","application/json; charset=UTF-8"],j,j)
 s=7
@@ -10683,7 +10683,7 @@ adf(a,b){return A.b8v(a,b)},
 b8v(a,b){var s=0,r=A.x(t.qi),q,p=2,o,n,m,l,k,j,i,h,g
 var $async$adf=A.r(function(c,d){if(c===1){o=d
 s=p}while(true)switch(s){case 0:p=4
-n=A.d4("http://localhost:9800/api/project/addprojectinfo",0,null)
+n=A.d4("https://pnsbhavance-backend.onrender.com/api/project/addprojectinfo",0,null)
 m=b
 i=t.N
 i=A.ai(["Content-Type","application/json; charset=UTF-8","Authorization","Bearer "+A.f(m)],i,i)
@@ -10715,7 +10715,7 @@ QB(a,b,c){return A.b8t(a,b,c)},
 b8t(a,b,c){var s=0,r=A.x(t.z),q,p=2,o,n,m,l,k,j,i,h,g,f,e
 var $async$QB=A.r(function(d,a0){if(d===1){o=a0
 s=p}while(true)switch(s){case 0:p=4
-n=A.d4("http://localhost:9800/api/project/updateproject/"+c,0,null)
+n=A.d4("https://pnsbhavance-backend.onrender.com/api/project/updateproject/"+c,0,null)
 h=t.N
 h=A.ai(["Content-Type","application/json; charset=UTF-8","Authorization","Bearer "+b],h,h)
 s=7
@@ -10753,7 +10753,7 @@ return A.w($async$QB,r)},
 ad8(){var s=0,r=A.x(t.os),q,p=2,o,n,m,l,k,j,i,h,g
 var $async$ad8=A.r(function(a,b){if(a===1){o=b
 s=p}while(true)switch(s){case 0:p=4
-n=A.d4("http://localhost:9800/api/user/getallusers/",0,null)
+n=A.d4("https://pnsbhavance-backend.onrender.com/api/user/getallusers/",0,null)
 s=7
 return A.p(A.P8(n,null),$async$ad8)
 case 7:m=b
@@ -10783,7 +10783,7 @@ ad4(a,b){return A.b8k(a,b)},
 b8k(a,b){var s=0,r=A.x(t.z),q,p=2,o,n,m,l,k,j,i,h,g,f
 var $async$ad4=A.r(function(c,d){if(c===1){o=d
 s=p}while(true)switch(s){case 0:p=4
-n=A.d4("http://localhost:9800/api/project/deleteproject/"+a,0,null)
+n=A.d4("https://pnsbhavance-backend.onrender.com/api/project/deleteproject/"+a,0,null)
 h=t.N
 s=7
 return A.p(A.aTR(n,A.ai(["Authorization","Bearer "+b],h,h)),$async$ad4)
@@ -10822,7 +10822,7 @@ ad5(a,b){return A.b8l(a,b)},
 b8l(a,b){var s=0,r=A.x(t.z),q,p=2,o,n,m,l,k,j,i,h,g,f
 var $async$ad5=A.r(function(c,d){if(c===1){o=d
 s=p}while(true)switch(s){case 0:p=4
-n=A.d4("http://localhost:9800/api/user/deleteuser/"+a,0,null)
+n=A.d4("https://pnsbhavance-backend.onrender.com/api/user/deleteuser/"+a,0,null)
 h=t.N
 s=7
 return A.p(A.aTR(n,A.ai(["Authorization","Bearer "+b],h,h)),$async$ad5)
@@ -10859,7 +10859,7 @@ add(a){return A.b8p(a)},
 b8p(a){var s=0,r=A.x(t.z),q,p=2,o,n,m,l,k,j,i,h,g,f
 var $async$add=A.r(function(b,c){if(b===1){o=c
 s=p}while(true)switch(s){case 0:p=4
-n=A.d4("http://localhost:9800/api/project/getoneproject/"+a,0,null)
+n=A.d4("https://pnsbhavance-backend.onrender.com/api/project/getoneproject/"+a,0,null)
 s=7
 return A.p(A.P8(n,null),$async$add)
 case 7:m=c
@@ -10894,7 +10894,7 @@ ad6(a,b,c){return A.b8m(a,b,c)},
 b8m(a,b,c){var s=0,r=A.x(t.z),q,p=2,o,n,m,l,k,j,i,h,g,f
 var $async$ad6=A.r(function(d,e){if(d===1){o=e
 s=p}while(true)switch(s){case 0:p=4
-n=A.d4("http://localhost:9800/api/project/deleteprojectimage/"+b,0,null)
+n=A.d4("https://pnsbhavance-backend.onrender.com/api/project/deleteprojectimage/"+b,0,null)
 i=t.N
 i=A.ai(["Content-Type","application/json; charset=UTF-8","Authorization","Bearer "+c],i,i)
 s=7
@@ -10931,7 +10931,7 @@ ad3(a,b,c){return A.b8j(a,b,c)},
 b8j(a,b,c){var s=0,r=A.x(t.z),q,p=2,o,n,m,l,k,j,i,h,g,f
 var $async$ad3=A.r(function(d,e){if(d===1){o=e
 s=p}while(true)switch(s){case 0:p=4
-n=A.d4("http://localhost:9800/api/project/addMultipleImages/"+b,0,null)
+n=A.d4("https://pnsbhavance-backend.onrender.com/api/project/addMultipleImages/"+b,0,null)
 h=t.N
 h=A.ai(["Content-Type","application/json; charset=UTF-8","Authorization","Bearer "+c],h,h)
 s=7
@@ -10969,7 +10969,7 @@ Da(a){return A.b8q(a)},
 b8q(a){var s=0,r=A.x(t.z),q,p=2,o,n,m,l,k,j,i,h,g,f,e
 var $async$Da=A.r(function(b,c){if(b===1){o=c
 s=p}while(true)switch(s){case 0:p=4
-n=A.d4("http://localhost:9800/api/user/getoneusers/"+a,0,null)
+n=A.d4("https://pnsbhavance-backend.onrender.com/api/user/getoneusers/"+a,0,null)
 s=7
 return A.p(A.P8(n,null),$async$Da)
 case 7:m=c
@@ -11054,7 +11054,7 @@ ada(a){return A.b8o(a)},
 b8o(a){var s=0,r=A.x(t.z),q,p=2,o,n,m,l,k,j,i,h,g,f,e,d,c
 var $async$ada=A.r(function(b,a0){if(b===1){o=a0
 s=p}while(true)switch(s){case 0:p=4
-n=A.d4("http://localhost:9800/api/user/getFavorites",0,null)
+n=A.d4("https://pnsbhavance-backend.onrender.com/api/user/getFavorites",0,null)
 m=a
 f=t.N
 s=7
@@ -11095,7 +11095,7 @@ ad2(a,b){return A.b8i(a,b)},
 b8i(a,b){var s=0,r=A.x(t.z),q,p=2,o,n,m,l,k,j,i,h,g,f,e,d
 var $async$ad2=A.r(function(c,a0){if(c===1){o=a0
 s=p}while(true)switch(s){case 0:p=4
-n=A.d4("http://localhost:9800/api/user/addFavoriteProject/"+b,0,null)
+n=A.d4("https://pnsbhavance-backend.onrender.com/api/user/addFavoriteProject/"+b,0,null)
 m=a
 f=t.N
 s=7
@@ -11135,7 +11135,7 @@ ade(a,b){return A.b8s(a,b)},
 b8s(a,b){var s=0,r=A.x(t.z),q,p=2,o,n,m,l,k,j,i,h,g,f,e,d
 var $async$ade=A.r(function(c,a0){if(c===1){o=a0
 s=p}while(true)switch(s){case 0:p=4
-n=A.d4("http://localhost:9800/api/user/removeFavoriteProject/"+b,0,null)
+n=A.d4("https://pnsbhavance-backend.onrender.com/api/user/removeFavoriteProject/"+b,0,null)
 m=a
 f=t.N
 s=7
@@ -11236,7 +11236,7 @@ G8(a){return A.bcg(a)},
 bcg(b2){var s=0,r=A.x(t.yp),q,p=2,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1
 var $async$G8=A.r(function(b3,b4){if(b3===1){o=b4
 s=p}while(true)switch(s){case 0:p=4
-n=A.bco("POST",A.d4("http://localhost:9800/api/S3/uploadtos3",0,null))
+n=A.bco("POST",A.d4("https://pnsbhavance-backend.onrender.com/api/S3/uploadtos3",0,null))
 f=b2.length,e=t.G,d=t.hS,c=t.zb,b=c.h("h6<1>"),a=t.G5,a0=t.N,a1=c.h("dv<1>"),a2=0
 case 7:if(!(a2<b2.length)){s=9
 break}m=b2[a2]
@@ -58395,7 +58395,7 @@ ye(a){this.T(new A.aDV(this,a))},
 Mu(){var s=0,r=A.x(t.H),q,p,o,n,m
 var $async$Mu=A.r(function(a,b){if(a===1)return A.u(b,r)
 while(true)switch(s){case 0:m=new A.Sf()
-try{q="http://localhost:9800/api/user/downloadUserData"
+try{q="https://pnsbhavance-backend.onrender.com/api/user/downloadUserData"
 p="user_data_"+Date.now()+".xlsx"
 m.a_N(q,p)
 A.ca("User data downloaded successfully.")}catch(l){o=A.a3(l)
