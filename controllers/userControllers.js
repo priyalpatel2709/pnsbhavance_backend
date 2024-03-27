@@ -63,7 +63,6 @@ const authUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && !ispasswordReq) {
-    console.log("File: userControllers.js", "Line 64:", "me 6u ??");
     // If user exists and password verification is not required
     res.status(200).json({
       _id: user._id,
@@ -188,7 +187,7 @@ async function downloadUserDataV2() {
     res.status(200).json({
       message: "User data downloaded successfully.",
     });
-    console.log("User data downloaded successfully.");
+    // console.log("User data downloaded successfully.");
   } catch (error) {
     res.status(500).json({
       message: `Error downloading user data:", ${error}`,
