@@ -3,6 +3,8 @@ const generateToken = require("../config/generateToken");
 const ExcelJS = require("exceljs");
 const User = require("../models/userModel");
 const admin = require("firebase-admin");
+const NodeCache = require("node-cache");
+const nodeCache = new NodeCache();
 // const bcrypt = require("bcryptjs");
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -147,55 +149,6 @@ const downloadUserData = async (req, res) => {
   }
 };
 
-async function downloadUserDataV2() {
-  try {
-    // Fetch user data from the database
-    const users = await User.find().lean(); // Assuming User is your Mongoose model
-
-    // Create a new workbook and worksheet
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Users");
-
-    // Define headers
-    const headers = [
-      "Name",
-      "Email",
-      "Phone",
-      "isAdmin",
-      "Pic",
-      "WhatsappNumber",
-      "isActive",
-    ];
-    worksheet.addRow(headers);
-
-    // Add user data to the worksheet
-    users.forEach((user) => {
-      const row = [
-        user.name,
-        user.email,
-        user.phone || "", // Handle null or undefined values
-        user.isAdmin ? "Yes" : "No", // Convert boolean to string
-        user.pic,
-        user.whatsappNumber || "", // Handle null or undefined values
-        user.isActive ? "Active" : "Inactive", // Convert boolean to string
-      ];
-      worksheet.addRow(row);
-    });
-
-    // Save the workbook to a file
-    await workbook.xlsx.writeFile("user_data.xlsx");
-    res.status(200).json({
-      message: "User data downloaded successfully.",
-    });
-    // console.log("User data downloaded successfully.");
-  } catch (error) {
-    res.status(500).json({
-      message: `Error downloading user data:", ${error}`,
-    });
-    console.error("Error downloading user data:", error);
-  }
-}
-
 const allUsers = asyncHandler(async (req, res) => {
   // console.log('File: userControllers.js', 'Line 61:', req.query.search);
   const keyword = req.query.search
@@ -334,12 +287,10 @@ const addFavoriteProject = asyncHandler(async (req, res) => {
   try {
     const user = await User.findById(userId);
     if (!user) {
-      // throw new Error("User not found");
-      return res.status(500).json({
-        message: `User not found}`,
-      });
+      return res.status(404).json({ message: "User not found" });
     }
 
+    // Add project to user's favorites
     const result = await user.addFavoriteProject(projectId);
     if (!result.success) {
       return res.status(500).json({
@@ -347,12 +298,12 @@ const addFavoriteProject = asyncHandler(async (req, res) => {
       });
     }
 
+    // Clear the cache for this user's favorites
+    nodeCache.del(`favorites_${userId}`);
+
     res.json({ message: "Project added to favorites" });
   } catch (error) {
-    // console.error("Error adding project to favorites:", error);
-    res
-      .status(500)
-      .json({ message: `Error adding project to favorites: ${error.message}` });
+    res.status(500).json({ message: `Error: ${error.message}` });
   }
 });
 
@@ -363,45 +314,55 @@ const removeFavoriteProject = asyncHandler(async (req, res) => {
   try {
     const user = await User.findById(userId);
     if (!user) {
-      throw new Error("User not found");
+      return res.status(404).json({ message: "User not found" });
     }
 
+    // Remove project from user's favorites
     const result = await user.removeFavoriteProject(projectId);
     if (!result.success) {
-      throw new Error(result.message);
+      return res.status(500).json({
+        message: `Error removing project from favorites: ${result.message}`,
+      });
     }
+
+    // Clear the cache for this user's favorites
+    nodeCache.del(`favorites_${userId}`);
 
     res.json({ message: "Project removed from favorites" });
   } catch (error) {
-    // console.error("Error removing project from favorites:", error);
-    res.status(500).json({
-      message: `Error removing project from favorites: ${error.message}`,
-    });
+    res.status(500).json({ message: `Error: ${error.message}` });
   }
 });
 
 const getFavorites = asyncHandler(async (req, res) => {
-  // const userId = req.params.userId;
   const userId = req.user._id;
 
-  // console.log("File: userControllers.js", "Line 252:", userId);
-
   try {
-    const user = await User.findById(userId).populate("favorites");
-    if (!user) {
-      throw new Error("User not found");
+    let favoriteProjects;
+
+    // Check if user's favorite projects are cached
+    if (nodeCache.has(`favorites_${userId}`)) {
+      favoriteProjects = JSON.parse(nodeCache.get(`favorites_${userId}`));
+    } else {
+      // Fetch user from the database and populate their favorite projects
+      const user = await User.findById(userId).populate("favorites");
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      favoriteProjects = user.favorites;
+
+      // Cache the favorite projects for the user
+      nodeCache.set(`favorites_${userId}`, JSON.stringify(favoriteProjects));
     }
 
-    if (user.favorites.length === 0) {
+    if (favoriteProjects.length === 0) {
       return res.json({ message: "User has no favorite projects" });
     }
 
-    res.json(user.favorites);
+    res.json(favoriteProjects);
   } catch (error) {
-    // console.error("Error getting favorite projects:", error);
-    res
-      .status(500)
-      .json({ message: `Error getting favorite projects: ${error.message}` });
+    res.status(500).json({ message: `Error: ${error.message}` });
   }
 });
 

@@ -1,6 +1,74 @@
 const asyncHandler = require("express-async-handler");
 const generateToken = require("../config/generateToken");
 const Project = require("../models/projectModle");
+const NodeCache = require("node-cache");
+const nodeCache = new NodeCache();
+
+// const addprojectinfo = asyncHandler(async (req, res) => {
+//   try {
+//     // Extract data from the request body
+//     const {
+//       projectname,
+//       dailyUpdates,
+//       layouts,
+//       projectImages,
+//       projectlocation,
+//       shortDescription,
+//       longdescription,
+//       queansdescription,
+//       projectlogo,
+//       brochurepdfUrl,
+//       projectaddress,
+//     } = req.body;
+
+//     // Check if the user is an admin
+//     if (!req.user.isAdmin) {
+//       return res
+//         .status(403)
+//         .json({ message: "Only admins can perform this action." });
+//     }
+
+//     // Check if the project name already exists
+//     const projectnameExists = await Project.findOne({ projectname });
+//     if (projectnameExists) {
+//       return res.status(400).json({ message: "Project name already exists." });
+//     }
+
+//     // Validate required fields
+//     if (!projectname || !projectlocation || !shortDescription) {
+//       return res.status(400).json({
+//         message: "Project name, location, and short description are required.",
+//       });
+//     }
+
+//     // Create a new project document
+//     const newProject = new Project({
+//       projectname,
+//       dailyUpdates,
+//       layouts,
+//       projectImages,
+//       projectlocation,
+//       shortDescription,
+//       longdescription,
+//       queansdescription,
+//       projectlogo,
+//       brochurepdfUrl,
+//       projectaddress,
+//     });
+
+//     // Save the project to the database
+//     const savedProject = await newProject.save();
+
+//     //add to cache
+//     // nodeCache.set("projects", JSON.stringify(savedProject));
+
+//     // Respond with the saved project data
+//     res.status(200).json(savedProject);
+//   } catch (error) {
+//     // console.error("Error adding project:", error);
+//     res.status(500).json({ message: "Internal server error." });
+//   }
+// });
 
 const addprojectinfo = asyncHandler(async (req, res) => {
   try {
@@ -57,6 +125,15 @@ const addprojectinfo = asyncHandler(async (req, res) => {
     // Save the project to the database
     const savedProject = await newProject.save();
 
+    // Add the saved project to the cache
+    if (nodeCache.has("projects")) {
+      let cachedProjects = JSON.parse(nodeCache.get("projects"));
+      cachedProjects.push(savedProject);
+      nodeCache.set("projects", JSON.stringify(cachedProjects));
+    } else {
+      nodeCache.set("projects", JSON.stringify([savedProject]));
+    }
+
     // Respond with the saved project data
     res.status(200).json(savedProject);
   } catch (error) {
@@ -65,10 +142,41 @@ const addprojectinfo = asyncHandler(async (req, res) => {
   }
 });
 
+
+// const getallprogect = asyncHandler(async (req, res) => {
+//   try {
+//     let allProjects;
+//     // Fetch all projects
+
+//     if (nodeCache.has("projects")) {
+//       allProjects = JSON.parse(nodeCache.get("projects"));
+//     } else {
+//       allProjects = await Project.find();
+//       nodeCache.set("projects", JSON.stringify(savedProject));
+//     }
+
+//     // Send the projects as a JSON response
+//     res.json(allProjects);
+//   } catch (error) {
+//     // If an error occurs, send an error response
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// });
+
 const getallprogect = asyncHandler(async (req, res) => {
   try {
-    // Fetch all projects
-    const allProjects = await Project.find();
+    let allProjects;
+
+    // Fetch all projects from cache if available
+    if (nodeCache.has("projects")) {
+      allProjects = JSON.parse(nodeCache.get("projects"));
+    } else {
+      // If projects are not cached, fetch them from the database
+      allProjects = await Project.find();
+
+      // Cache the fetched projects for future requests
+      nodeCache.set("projects", JSON.stringify(allProjects));
+    }
 
     // Send the projects as a JSON response
     res.json(allProjects);
@@ -77,6 +185,7 @@ const getallprogect = asyncHandler(async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 const updateprojectdata = asyncHandler(async (req, res) => {
   const projectId = req.params.projectId;
@@ -122,7 +231,7 @@ const updateprojectdata = asyncHandler(async (req, res) => {
       // If the project is not found, return an error
       throw new Error("Project not found");
     }
-
+    nodeCache.del("projects");
     res.json(updatedProject); // Return the updated project
   } catch (error) {
     // Handle any errors that occur during the update process
@@ -150,7 +259,7 @@ const deleteProject = asyncHandler(async (req, res) => {
       // If the project is not found, return an error
       throw new Error("Project not found");
     }
-
+    nodeCache.del("projects");
     res.json({ message: "Project deleted successfully" });
   } catch (error) {
     // Handle any errors that occur during the delete process
@@ -198,7 +307,7 @@ const deleteItemFromProject = asyncHandler(async (req, res) => {
 
     // Save the updated project
     const updatedProject = await project.save();
-
+    nodeCache.del("projects");
     res.json(updatedProject);
   } catch (error) {
     // Handle any errors that occur during the update process
@@ -246,6 +355,7 @@ const addMultipleImages = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: "Invalid field name" });
     }
     await project.save();
+    nodeCache.del("projects");
     res.status(200).json({ message: "Images added successfully" });
   } catch (error) {
     console.error("Error adding images:", error);
